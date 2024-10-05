@@ -1,7 +1,6 @@
-<h1 align="center"> MasGas Version Movil 🔥🌎</h1>
-
-<div align="center">
-  <img src="https://i.postimg.cc/6psGzxf8/Dermabot.jpg" width="280" alt="LOGO">
+<h1 align="center"> DermBot - Aplicación de Chat para Diagnóstico de Dermatitis 🤖💬</h1> 
+<div align="center"> 
+  <img src="https://i.postimg.cc/52qWG8Lw/logo2.png" width="280" alt="LOGO"> 
 </div>
 
 ## 📱 Mas Gas 🔥: 
