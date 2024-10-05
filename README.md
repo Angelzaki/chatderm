@@ -2,10 +2,6 @@
 📱 Sobre DermBot 🤖
 El proyecto DermBot es una innovadora aplicación de mensajería instantánea que ayuda a los usuarios a identificar tipos de dermatitis mediante el análisis de imágenes. La interfaz simula una conversación con un asistente virtual del centro de salud, proporcionando una experiencia fluida y accesible.
 
-Tecnologías utilizadas:
-
-Backend: Node.js para el procesamiento eficiente de datos.
-Base de Datos: Firebase para el almacenamiento y sincronización en tiempo real.
 📝 Descripción del Proceso
 Inicio de la Conversación: El usuario saluda y expresa su deseo de realizar un descarte de dermatitis.
 Solicitud de Imagen: El asistente virtual solicita una foto de la zona afectada.
