@@ -32,14 +32,21 @@ Nuestros Usuarios y sus Necesidades
 🔹 Información Clara y Recomendaciones: Conocer el tipo de dermatitis y los pasos a seguir.
 🔹 Disponibilidad Continua: Asistente virtual disponible en cualquier lugar y momento.
 <h2 align="center">✨ Equipo de Trabajo ✨</h2> <div align="center"> <table> <tr> <th>Nombre</th> <th>Apellido</th> <th>Rol</th> <th>Portfolio</th> </tr> <tr> <td>Angel</td> <td>Salazar Maylle</td> <td>Desarrollador</td> <td><a href="https://www.linkedin.com/in/angel-salazar-maylle-36236b198/" target="_blank">Ver LinkedIn</a></td> </tr> <tr> <td>Ximena</td> <td>Torres</td> <td>Desarrollador</td> </tr> </table> </div>
-<div align="center"> <h1>🛠️ Tecnologías Utilizadas ⚡</h1> </div> <div align='center'> <h2>Frontend</h2> </div> <div align='center'>
-
+<div align="center"> <h1>🛠️ Tecnologías Utilizadas ⚡</h1> </div> 
+<div align='center'> <h2>Frontend</h2> </div> <div align='center'>
+  
+![Static Badge](https://img.shields.io/badge/Figma-%23F24E1E?style=for-the-badge&logo=figma&logoColor=white)
+![React](https://img.shields.io/static/v1?style=for-the-badge&message=React&color=222222&logo=React&logoColor=61DAFB&label=)
 
 </div> <div align='center'> <h2>Backend</h2> </div> <div align='center'>
 
+![Postman](https://img.shields.io/badge/Postman-FF6C37?style=for-the-badge&logo=postman&logoColor=white)
+![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=node.js&logoColor=white)
+![Firebase](https://img.shields.io/badge/Firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=black)
 
 </div> <div align='center'> <h2>Organización y Comunicación</h2> </div> <div align="center">
-
+  
+![Static Badge](https://img.shields.io/badge/WhatsApp-25D366?style=for-the-badge&logo=whatsapp&logoColor=white) 
 
 </div>
 <h2 align="center">💡 Inspiración y Objetivo 💡</h2> <div align="center"> DermBot aspira a ser la primera línea de contacto para personas que necesitan respuestas rápidas sobre su salud dermatológica. Con tecnología avanzada y accesible para todos, nuestro propósito es acercar la salud al alcance de todos. </div>
