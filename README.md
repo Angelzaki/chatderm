@@ -43,8 +43,6 @@ Este proyecto tiene como objetivo principal ofrecer un apoyo inicial y orientaci
 🔹 Disponibilidad y Facilidad de Uso: Acceder al asistente virtual desde cualquier lugar y en cualquier momento, especialmente cuando el acceso a médicos sea limitado.
 
 
-<h2 align="center">✨ Equipo de trabajo ✨</h2> <table align="center"> <tr>
-
 
 <h2 align="center">✨ Equipo de trabajo ✨</h2>
 
