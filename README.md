@@ -26,13 +26,21 @@ Nuestros Usuarios y sus Necesidades
 🟩 Profesionales Ocupados: Personas que desean realizar un descarte inicial antes de buscar atención médica urgente.
 
 🔍 Insights Clave
+ <br></br>
 ⌚ Rapidez en la Respuesta: Resultados en segundos, ideal fuera de los horarios convencionales.
+ <br></br>
 ⭐ Confianza en el Asistente Virtual: Recomendaciones claras y confiables.
+ <br></br>
 💸 Acceso sin Costo Inmediato: Evaluación preliminar gratuita para decidir sobre la necesidad de atención médica.
+ <br></br>
 🔮 Orientación para Acciones Urgentes: Recomendaciones claras sobre acudir al centro de salud.
+ <br></br>
 🚀 Necesidades Clave
+ <br></br>
 🔹 Evaluación Preliminar Accesible: Identificación rápida de dermatitis mediante imagen.
+ <br></br>
 🔹 Información Clara y Recomendaciones: Conocer el tipo de dermatitis y los pasos a seguir.
+ <br></br>
 🔹 Disponibilidad Continua: Asistente virtual disponible en cualquier lugar y momento.
 <h2 align="center">✨ Equipo de Trabajo ✨</h2> <div align="center"> <table> <tr> <th>Nombre</th> <th>Apellido</th> <th>Rol</th> <th>Portfolio</th> </tr> <tr> <td>Angel</td> <td>Salazar Maylle</td> <td>Desarrollador</td> <td><a href="https://www.linkedin.com/in/angel-salazar-maylle-36236b198/" target="_blank">Ver LinkedIn</a></td> </tr> <tr> <td>Ximena</td> <td>Torres</td> <td>Desarrollador</td> </tr> </table> </div>
 <div align="center"> <h1>🛠️ Tecnologías Utilizadas ⚡</h1> </div> 
