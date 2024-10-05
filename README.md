@@ -42,7 +42,7 @@ Nuestros Usuarios y sus Necesidades
 🔹 Información Clara y Recomendaciones: Conocer el tipo de dermatitis y los pasos a seguir.
  <br></br>
 🔹 Disponibilidad Continua: Asistente virtual disponible en cualquier lugar y momento.
-<h2 align="center">✨ Equipo de Trabajo ✨</h2> <div align="center"> <table> <tr> <th>Nombre</th> <th>Apellido</th> <th>Rol</th> <th>Portfolio</th> </tr> <tr> <td>Angel</td> <td>Salazar Maylle</td> <td>Desarrollador</td> <td><a href="https://www.linkedin.com/in/angel-salazar-maylle-36236b198/" target="_blank">Ver LinkedIn</a></td> </tr> <tr> <td>Ximena</td> <td>Torres</td> <td>Desarrollador</td> </tr> </table> </div>
+<h2 align="center">✨ Equipo de Trabajo ✨</h2> <div align="center"> <table> <tr> <th>Nombre</th> <th>Apellido</th> <th>Rol</th> <th>Portafolio</th> </tr> <tr> <td>Angel</td> <td>Salazar Maylle</td> <td>Desarrollador</td> <td><a href="https://www.linkedin.com/in/angel-salazar-maylle-36236b198/" target="_blank">Ver LinkedIn</a></td> </tr> <tr> <td>Ximena</td> <td>Torres</td> <td>Desarrollador</td> </tr> </table> </div>
 <div align="center"> <h1>🛠️ Tecnologías Utilizadas ⚡</h1> </div> 
 <div align='center'> <h2>Frontend</h2> </div> <div align='center'>
   
