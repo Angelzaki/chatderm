@@ -5,18 +5,24 @@ El proyecto DermBot es una innovadora aplicación de mensajería instantánea qu
  <br></br>
 📝 Descripción del Proceso
 Inicio de la Conversación: El usuario saluda y expresa su deseo de realizar un descarte de dermatitis.
+ <br></br>
 Solicitud de Imagen: El asistente virtual solicita una foto de la zona afectada.
+ <br></br>
 Análisis y Respuesta: Tras recibir la imagen, el asistente la analiza y determina el tipo de dermatitis (ej. dermatitis atópica).
+ <br></br>
 Recomendación de Seguimiento: Se recomienda al usuario acudir a un centro de salud para una evaluación detallada.
+ <br></br>
 Cierre de la Interacción: El usuario agradece la asistencia proporcionada.
+ <br></br>
 Objetivo Principal: Ofrecer un apoyo inicial sobre posibles casos de dermatitis, mejorando el acceso a recomendaciones rápidas y oportunas.
-
+ <br></br>
 🎯 Público Objetivo
 Nuestros Usuarios y sus Necesidades
+ <br></br>
 🟩 Pacientes con Síntomas de Dermatitis: Personas que presentan irritaciones y buscan identificar rápidamente si podría tratarse de dermatitis antes de acudir al centro de salud.
-
+ <br></br>
 🟩 Familias Preocupadas por la Salud: Padres y cuidadores que necesitan información rápida sobre problemas de piel que afectan a los miembros de su familia.
-
+ <br></br>
 🟩 Profesionales Ocupados: Personas que desean realizar un descarte inicial antes de buscar atención médica urgente.
 
 🔍 Insights Clave
