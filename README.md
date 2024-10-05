@@ -3,38 +3,47 @@
   <img src="https://i.postimg.cc/52qWG8Lw/logo2.png" width="280" alt="LOGO"> 
 </div>
 
-## 📱 Mas Gas 🔥: 
-El proyecto MASGAS se centra en la implementación de una Arquitectura Orientada a Servicios (SOA) para transformar la gestión de ventas y distribución de gas en una aplicación móvil avanzada. Utilizando Node.js para el backend y Firebase para la gestión de bases de datos, el sistema garantiza una infraestructura escalable, segura y eficiente. La aplicación permite a los usuarios gestionar pedidos de gas envasado de manera fluida, conectando proveedores con clientes a través de una interfaz optimizada. Además, integra autenticación segura, monitoreo en tiempo real y servicios adicionales que mejoran la experiencia tanto para proveedores como para clientes, facilitando la escalabilidad del negocio y la optimización operativa.
+## 📱 DermBot 🤖: 
+El proyecto DermBot se centra en la creación de una aplicación de mensajería instantánea diseñada para ayudar a los usuarios a identificar tipos de dermatitis mediante el análisis de imágenes. Utilizando Node.js para el backend y Firebase para la gestión de bases de datos, la aplicación simula una conversación con un asistente virtual del centro de salud que responde a las consultas del usuario.
 
-Este proyecto ofrece soluciones tecnológicas avanzadas como el procesamiento en tiempo real, la automatización de procesos manuales y la gestión inteligente de datos, todo con el objetivo de mejorar la eficiencia operativa de MASGAS.
+Descripción del Proceso
+Inicio de la Conversación: El usuario saluda y expresa su deseo de realizar un descarte de dermatitis.
+Solicitud de Imagen: El asistente virtual solicita una foto de la zona afectada.
+Análisis y Respuesta: Tras recibir la imagen, el asistente la analiza y responde indicando que, según la observación, se trata de un tipo específico de dermatitis (por ejemplo, dermatitis atópica).
+Recomendación de Seguimiento: Además, recomienda al usuario acudir a un centro de salud para una evaluación más detallada.
+Cierre de la Interacción: La interacción termina con el usuario agradeciendo la asistencia proporcionada.
+Este proyecto tiene como objetivo principal ofrecer un apoyo inicial y orientación sobre posibles casos de dermatitis, mejorando el acceso a recomendaciones rápidas y oportunas.
 
 ## Público Objetivo 🏠🏢👫
 
-### Nuestros Clientes y su Propósito
+### Nuestros Usuarios y sus Necesidades
 
-🟩 Propietarios de Viviendas y Empresas: Personas y negocios que necesitan una forma sencilla y confiable de gestionar el suministro de gas envasado para sus hogares, negocios, o instalaciones. Buscan comodidad y seguridad en la entrega y el uso de servicios relacionados con el gas.
+🟩 Pacientes con Síntomas de Dermatitis: Personas que presentan irritaciones o erupciones en la piel y buscan una forma rápida de identificar si podría tratarse de dermatitis antes de acudir al centro de salud.
 
-🟩 Arrendatarios: Inquilinos que requieren pedidos rápidos y confiables de gas, sin complicaciones adicionales, y que desean una solución que les permita recibir el suministro de manera eficiente, incluso cuando están fuera de sus viviendas.
+🟩 Familias Preocupadas por la Salud de sus Miembros: Padres y cuidadores que necesitan información rápida sobre problemas de piel que afectan a sus hijos u otros miembros de la familia.
 
-🟩 Familias y Profesionales Ocupados: Usuarios que valoran la facilidad de gestión de sus pedidos de gas, incluyendo la capacidad de realizar órdenes a través de una aplicación móvil con disponibilidad a cualquier hora y el seguimiento en tiempo real del pedido.
+🟩 Profesionales con Agendas Ocupadas: Personas que desean realizar un descarte inicial antes de decidir si deben buscar atención médica urgente.
 
 ### Insights clave
 
-⌚ Disponibilidad: Los usuarios valoran mucho la capacidad de pedir y recibir gas en momentos fuera del horario laboral habitual, facilitando su rutina.
+⌚ Rapidez en la Respuesta: Los usuarios valoran la posibilidad de obtener un análisis preliminar en cuestión de segundos, especialmente fuera de horarios convencionales de consulta.
 
-⭐ Confianza en el Proveedor: La reputación y opiniones de otros clientes sobre los distribuidores de gas son factores importantes en la decisión de compra.
+⭐ Confianza en el Asistente Virtual: La calidad de la respuesta y la recomendación profesional generan confianza en el uso continuo de la aplicación.
 
-💸 Transparencia en el Precio: Los usuarios desean conocer de antemano el costo del suministro de gas, así como cualquier cargo adicional.
+💸 Acceso sin Costo Inmediato: La posibilidad de realizar un análisis inicial sin costo antes de decidir acudir al médico es una necesidad clave para muchos usuarios.
 
-🔮 Valoración de los Distribuidores: Los usuarios prefieren plataformas que les permitan conocer la calidad del servicio a través de la valoración de otros clientes.
+🔮 Orientación Rápida para Acciones Urgentes: Los usuarios prefieren contar con una recomendación clara para saber si deben acudir de manera urgente al centro de salud.
 
 ## Necesidades clave
 
-🔹​ Acceso a Proveedores Confiables: Encontrar proveedores de gas envasado que puedan cumplir con la calidad y seguridad necesaria para sus hogares o negocios.
+🔹 Acceso a una Evaluación Preliminar: Obtener una primera observación de la dermatitis a través de una imagen sin necesidad de ir al centro de salud.
 
-🔹​ Información Clara del Servicio: Poder visualizar el perfil del proveedor de gas y las reseñas de otros usuarios, asegurando una contratación informada.
+🔹 Información Clara y Recomendaciones: Conocer qué tipo de dermatitis podría estar afectando al usuario y obtener una recomendación sobre los pasos a seguir.
 
-🔹​ Comunicación Fluida con el Proveedor: Tener un canal claro y eficiente para comunicarse con el proveedor durante la solicitud y la entrega del gas.
+🔹 Disponibilidad y Facilidad de Uso: Acceder al asistente virtual desde cualquier lugar y en cualquier momento, especialmente cuando el acceso a médicos sea limitado.
+
+
+<h2 align="center">✨ Equipo de trabajo ✨</h2> <table align="center"> <tr>
 
 
 <h2 align="center">✨ Equipo de trabajo ✨</h2>
@@ -49,35 +58,12 @@ Este proyecto ofrece soluciones tecnológicas avanzadas como el procesamiento en
   <tr>
     <td>Angel</td>
     <td>Salazar Maylle</td>
-    <td>Project Manager / Desarrollador </td>
+    <td>Desarrollador</td>
     <td><a href="https://www.linkedin.com/in/angel-salazar-maylle-36236b198/" target="_blank">Ver LinkedIn</a></td>
   </tr>
   <tr>
-    <td>Ricardo</td>
-    <td>Pumarrumi Viera</td>
-    <td>Scrum Master / Desarrollador</td>
-    <td><a href="https://www.linkedin.com/in/ricardo-fernando-pumarrumi-viera-b89aa1288/" target="_blank">Ver LinkedIn</a></td>
-  </tr>
-  <tr>
-    <td>Gabriel</td>
-    <td>Trujillo</td>
-    <td>Project Manager</td>
-    <td><a href="https://www.linkedin.com/in/gabriel-trujillo-7989492a7/" target="_blank">Ver LinkedIn</a></td>
-  </tr>
-   <tr>
-    <td>Henry</td>
-    <td>García Cancho</td>
-    <td>Desarrollador</td>
-    <td><a href="https://www.linkedin.com/in/henry-garc%C3%ADa-cancho-3a4269235/" target="_blank">Ver LinkedIn</a></td>
-  </tr>
-  <tr>
-    <td>Jean Pier</td>
-    <td>Ticlla Livia</td>
-    <td>Desarrollador</td>
-  </tr>
-  <tr>
-    <td>Emerson</td>
-    <td>Soncco Alvarado</td>
+    <td>Ximena</td>
+    <td>Torres</td>
     <td>Desarrollador</td>
   </tr>
 </table>
@@ -95,7 +81,7 @@ Este proyecto ofrece soluciones tecnológicas avanzadas como el procesamiento en
   <div align='center'>
     
 ![Static Badge](https://img.shields.io/badge/Figma-%23F24E1E?style=for-the-badge&logo=figma&logoColor=white)
-![React](https://img.shields.io/static/v1?style=for-the-badge&message=React&color=222222&logo=React&logoColor=61DAFB&label=)
+![React Native](https://img.shields.io/static/v1?style=for-the-badge&message=React&color=222222&logo=React&logoColor=61DAFB&label=)
 
 <!-- TECNOLOGÍAS POR VERIFICAR
 ![Vite](https://img.shields.io/badge/vite-%23646CFF.svg?style=for-the-badge&logo=vite&logoColor=white)
