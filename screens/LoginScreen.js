@@ -1,15 +1,28 @@
-import React from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, Alert } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import appFirebase from '../firebase';
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+const auth = getAuth(appFirebase)
 
 const LoginScreen = ({ navigation }) => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleLogin = async () => {
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      Alert.alert('Inicio de sesión exitoso', 'Bienvenido de nuevo');
+      navigation.navigate('Home'); // Navegar a HomeScreen si el inicio de sesión es exitoso
+    } catch (error) {
+      Alert.alert('Error', error.message);
+    }
+  };
+
   return (
     <View style={styles.container}>
-      <Image
-        source={require('../assets/logo.png')}
-        style={styles.logo}
-      />
+      <Image source={require('../assets/logo.png')} style={styles.logo} />
 
       {/* Acceda a su cuenta */}
       <Text style={styles.title}>Acceda a su cuenta</Text>
@@ -19,25 +32,25 @@ const LoginScreen = ({ navigation }) => {
         style={styles.input}
         placeholder="Email"
         placeholderTextColor="#cccccc"
+        value={email}
+        onChangeText={setEmail}
       />
       <TextInput
         style={styles.input}
         placeholder="Password"
         placeholderTextColor="#cccccc"
         secureTextEntry
+        value={password}
+        onChangeText={setPassword}
       />
 
       {/* Botón Iniciar Sesión */}
-      <TouchableOpacity
-        style={styles.buttonContainer}
-        onPress={() => navigation.navigate('Home')} // Navegar a HomeScreen
-      >
-        <LinearGradient
-          colors={['#00d2ff', '#ff3c5e']}
-          style={styles.button}>
+      <TouchableOpacity style={styles.buttonContainer} onPress={handleLogin}>
+        <LinearGradient colors={['#00d2ff', '#ff3c5e']} style={styles.button}>
           <Text style={styles.buttonText}>INICIAR SESIÓN</Text>
         </LinearGradient>
       </TouchableOpacity>
+
       {/* Olvidaste la contraseña */}
       <Text style={styles.forgotPassword}>¿Olvidaste la contraseña?</Text>
 
@@ -54,10 +67,7 @@ const LoginScreen = ({ navigation }) => {
       {/* ¿Aún no tienes cuenta? */}
       <Text style={styles.footerText}>
         ¿Aún no tienes cuenta?{' '}
-        <Text
-          style={styles.footerLink}
-          onPress={() => navigation.navigate('Register')}
-        >
+        <Text style={styles.footerLink} onPress={() => navigation.navigate('Register')}>
           Ingresa aquí
         </Text>
       </Text>

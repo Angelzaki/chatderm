@@ -1,12 +1,20 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, Text, Image, StyleSheet } from 'react-native';
 
-const SplashScreen = () => {
+const SplashScreen = ({ navigation }) => {
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      navigation.replace('Login'); // Navegar al LoginScreen después de 3 segundos
+    }, 3000);
+
+    return () => clearTimeout(timer); // Limpiar el temporizador al desmontar
+  }, [navigation]);
+
   return (
     <View style={styles.container}>
       <Text style={styles.welcomeText}>Bienvenido a</Text>
       <Image
-        source={require('./assets/splash.png')} // Asegúrate de tener el splash en la carpeta 'assets'
+        source={require('./assets/splash.png')} // Asegúrate de tener la imagen en la carpeta 'assets'
         style={styles.logo}
       />
       <Text style={styles.loadingText}>Cargando...</Text>
@@ -39,4 +47,3 @@ const styles = StyleSheet.create({
 });
 
 export default SplashScreen;
-

@@ -1,13 +1,45 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import Icon from 'react-native-vector-icons/FontAwesome'; // Importar iconos para el checkbox
+import Icon from 'react-native-vector-icons/FontAwesome';
+import { auth, db } from '../firebase';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { addDoc, collection } from 'firebase/firestore';
 
-const RegisterScreen = () => {
+const RegisterScreen = ({ navigation }) => {
+  const [nombre, setNombre] = useState('');
+  const [apellido, setApellido] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [isChecked, setIsChecked] = useState(false);
 
   const toggleCheckbox = () => {
     setIsChecked(!isChecked);
+  };
+
+  const handleRegister = async () => {
+    if (!isChecked) {
+      Alert.alert('Términos y condiciones', 'Debes aceptar los términos y condiciones para registrarte');
+      return;
+    }
+
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      await addDoc(collection(db, 'users'), {
+        uid: user.uid,
+        name: nombre,
+        surname: apellido,
+        email: email,
+      });
+
+      Alert.alert('Registro exitoso', 'Usuario agregado');
+
+      navigation.replace('Success'); // Navegar a SuccessScreen después de registro exitoso
+    } catch (error) {
+      Alert.alert('Error', error.message);
+    }
   };
 
   return (
@@ -21,6 +53,8 @@ const RegisterScreen = () => {
         style={styles.input}
         placeholder="Nombre"
         placeholderTextColor="#cccccc"
+        value={nombre}
+        onChangeText={setNombre}
       />
 
       <Text style={styles.label}>Apellidos:</Text>
@@ -28,13 +62,17 @@ const RegisterScreen = () => {
         style={styles.input}
         placeholder="Apellido"
         placeholderTextColor="#cccccc"
+        value={apellido}
+        onChangeText={setApellido}
       />
 
       <Text style={styles.label}>Correo electrónico:</Text>
       <TextInput
         style={styles.input}
-        placeholder="Sunset@gmail.com"
+        placeholder="example@gmail.com"
         placeholderTextColor="#cccccc"
+        value={email}
+        onChangeText={setEmail}
       />
 
       <Text style={styles.label}>Contraseña:</Text>
@@ -43,6 +81,8 @@ const RegisterScreen = () => {
         placeholder="Password"
         placeholderTextColor="#cccccc"
         secureTextEntry
+        value={password}
+        onChangeText={setPassword}
       />
 
       {/* Acepta términos y condiciones */}
@@ -57,17 +97,14 @@ const RegisterScreen = () => {
       </TouchableOpacity>
 
       {/* Botón Crear Cuenta */}
-      <TouchableOpacity style={styles.buttonContainer}>
-        <LinearGradient
-          colors={['#00d2ff', '#ff3c5e']}
-          style={styles.button}>
+      <TouchableOpacity style={styles.buttonContainer} onPress={handleRegister}>
+        <LinearGradient colors={['#00d2ff', '#ff3c5e']} style={styles.button}>
           <Text style={styles.buttonText}>CREAR CUENTA</Text>
         </LinearGradient>
       </TouchableOpacity>
     </View>
   );
 };
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
