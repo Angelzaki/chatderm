@@ -2,15 +2,16 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { auth, db } from '../firebase';
+import { auth, db } from '../firebase'; // Asegúrate de importar auth y db correctamente
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { addDoc, collection } from 'firebase/firestore';
+import { setDoc, doc } from 'firebase/firestore';
 
 const RegisterScreen = ({ navigation }) => {
   const [nombre, setNombre] = useState('');
-  const [apellido, setApellido] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [edad, setEdad] = useState('');
+  const [rol, setRol] = useState('Paciente'); // Por defecto, el rol es "Paciente"
   const [isChecked, setIsChecked] = useState(false);
 
   const toggleCheckbox = () => {
@@ -24,19 +25,22 @@ const RegisterScreen = ({ navigation }) => {
     }
 
     try {
+      // Crear usuario con Firebase Authentication
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
-      await addDoc(collection(db, 'users'), {
-        uid: user.uid,
-        name: nombre,
-        surname: apellido,
-        email: email,
+      // Guardar datos adicionales en Firestore
+      await setDoc(doc(db, 'Usuarios',user.uid), {
+        Nombre: nombre,
+        Email: email,
+        Edad: parseInt(edad), // Convertir la edad a número
+        Rol: rol, // "Paciente" o "Medico"
+        ContraseñaHash: password, // Guardar la contraseña hash (por motivos de ejemplo)
+        FechaRegistro: new Date(), // Guarda también la fecha de creación
       });
 
-      Alert.alert('Registro exitoso', 'Usuario agregado');
-
-      navigation.replace('Success'); // Navegar a SuccessScreen después de registro exitoso
+      Alert.alert('Registro exitoso', 'Usuario registrado exitosamente');
+      navigation.replace('Login'); // Redirigir a la pantalla de login después del registro
     } catch (error) {
       Alert.alert('Error', error.message);
     }
@@ -44,7 +48,6 @@ const RegisterScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      {/* Título de Registro */}
       <Text style={styles.title}>REGÍSTRATE</Text>
 
       {/* Campos de Entrada */}
@@ -56,16 +59,6 @@ const RegisterScreen = ({ navigation }) => {
         value={nombre}
         onChangeText={setNombre}
       />
-
-      <Text style={styles.label}>Apellidos:</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Apellido"
-        placeholderTextColor="#cccccc"
-        value={apellido}
-        onChangeText={setApellido}
-      />
-
       <Text style={styles.label}>Correo electrónico:</Text>
       <TextInput
         style={styles.input}
@@ -85,18 +78,49 @@ const RegisterScreen = ({ navigation }) => {
         onChangeText={setPassword}
       />
 
-      {/* Acepta términos y condiciones */}
+      <Text style={styles.label}>Edad:</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="Edad"
+        placeholderTextColor="#cccccc"
+        keyboardType="numeric" // Solo números
+        value={edad}
+        onChangeText={setEdad}
+      />
+
+      {/* Selector de rol */}
+      <Text style={styles.label}>Rol:</Text>
+      <View style={styles.roleContainer}>
+        <TouchableOpacity
+          onPress={() => setRol('Paciente')}
+          style={[
+            styles.roleButton,
+            rol === 'Paciente' ? styles.roleButtonSelected : styles.roleButtonUnselected
+          ]}
+        >
+          <Text style={styles.roleText}>Paciente</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          onPress={() => setRol('Medico')}
+          style={[
+            styles.roleButton,
+            rol === 'Medico' ? styles.roleButtonSelected : styles.roleButtonUnselected
+          ]}
+        >
+          <Text style={styles.roleText}>Medico</Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* Aceptar términos */}
       <View style={styles.checkboxContainer}>
         <TouchableOpacity onPress={toggleCheckbox} style={styles.checkbox}>
           {isChecked && <Icon name="check" size={20} color="#00d2ff" />}
         </TouchableOpacity>
         <Text style={styles.termsText}>Acepta términos y condiciones</Text>
       </View>
-      <TouchableOpacity>
-        <Text style={styles.privacyPolicy}>Política de privacidad</Text>
-      </TouchableOpacity>
 
-      {/* Botón Crear Cuenta */}
+      {/* Botón de registro */}
       <TouchableOpacity style={styles.buttonContainer} onPress={handleRegister}>
         <LinearGradient colors={['#00d2ff', '#ff3c5e']} style={styles.button}>
           <Text style={styles.buttonText}>CREAR CUENTA</Text>
@@ -105,6 +129,7 @@ const RegisterScreen = ({ navigation }) => {
     </View>
   );
 };
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -152,12 +177,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#666666',
   },
-  privacyPolicy: {
-    fontSize: 14,
-    color: '#0000ff',
-    textDecorationLine: 'underline',
-    marginBottom: 20,
-  },
   buttonContainer: {
     width: '100%',
     borderRadius: 25,
@@ -172,6 +191,29 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  roleContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 15,
+  },
+  roleButton: {
+    flex: 1,
+    paddingVertical: 10,
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginHorizontal: 5,
+  },
+  roleButtonSelected: {
+    backgroundColor: '#00d2ff',
+  },
+  roleButtonUnselected: {
+    backgroundColor: '#cccccc',
+  },
+  roleText: {
+    fontSize: 16,
+    color: '#ffffff',
   },
 });
 

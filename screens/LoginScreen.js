@@ -9,11 +9,12 @@ const auth = getAuth(appFirebase)
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  
 
   const handleLogin = async () => {
     try {
-      await signInWithEmailAndPassword(auth, email, password);
-      Alert.alert('Inicio de sesión exitoso', 'Bienvenido de nuevo');
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      Alert.alert('Inicio de sesión exitoso', 'Bienvenido de nuevo,  ');
       navigation.navigate('Home'); // Navegar a HomeScreen si el inicio de sesión es exitoso
     } catch (error) {
       Alert.alert('Error', error.message);
