@@ -2,14 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, ActivityIndicator, ScrollView, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { getAuth } from 'firebase/auth';
-import { getDoc, doc } from 'firebase/firestore';
-import { db } from '../firebase'; // Firestore configurado
+import { getDoc, doc, updateDoc } from 'firebase/firestore';
+import { db } from '../firebase';
+import { launchImageLibrary } from 'react-native-image-picker';
 
 const auth = getAuth();
 
 const ProfileScreen = ({ navigation }) => {
-  const [userData, setUserData] = useState(null); // Estado para almacenar los datos del usuario
-  const [loading, setLoading] = useState(true); // Estado de carga
+  const [userData, setUserData] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -39,6 +40,19 @@ const ProfileScreen = ({ navigation }) => {
     fetchUserData();
   }, []);
 
+  const handleImageChange = async () => {
+    const result = await launchImageLibrary({ mediaType: 'photo', quality: 0.7 });
+    if (!result.didCancel && result.assets) {
+      const uri = result.assets[0].uri;
+      setUserData({ ...userData, infoText: uri });
+      const currentUser = auth.currentUser;
+      if (currentUser) {
+        const userDocRef = doc(db, 'Usuarios', currentUser.uid);
+        await updateDoc(userDocRef, { infoText: uri });
+      }
+    }
+  };
+
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
@@ -50,19 +64,17 @@ const ProfileScreen = ({ navigation }) => {
   return (
     <ScrollView style={styles.scrollContainer}>
       <View style={styles.container}>
-        {/* Encabezado del perfil */}
         <View style={styles.header}>
-          <View style={styles.profileSection}>
+          <TouchableOpacity onPress={handleImageChange} style={styles.profileImageContainer}>
             <Image
-              source={userData?.profileImage || require('../assets/profile-image.png')} // Imagen de perfil o predeterminada
+              source={userData?.infoText ? { uri: userData.infoText } : require('../assets/choco.webp')}
               style={styles.profileImage}
             />
-            <Text style={styles.profileName}>{userData?.Nombre || 'Usuario'}</Text>
-            <Text style={styles.profileEmail}>{userData?.Email || 'Correo no disponible'}</Text>
-          </View>
+          </TouchableOpacity>
+          <Text style={styles.profileName}>{userData?.Nombre || 'Usuario'}</Text>
+          <Text style={styles.profileEmail}>{userData?.Email || 'Correo no disponible'}</Text>
         </View>
 
-        {/* Información adicional del usuario */}
         <View style={styles.infoContainer}>
           <View style={styles.infoItem}>
             <Icon name="id-card" size={20} color="#ff3c5e" />
@@ -70,12 +82,11 @@ const ProfileScreen = ({ navigation }) => {
           </View>
         </View>
 
-        {/* Botón para Cerrar Sesión */}
         <TouchableOpacity
           style={styles.logoutButton}
           onPress={() => {
             auth.signOut().then(() => {
-              navigation.replace('Login'); // Redirigir a la pantalla de Login
+              navigation.replace('Login');
             });
           }}
         >
@@ -89,12 +100,12 @@ const ProfileScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   scrollContainer: {
     flex: 1,
-    backgroundColor: '#f8f9fa',
+    backgroundColor: '#f2f2f7',
   },
   container: {
     flex: 1,
     alignItems: 'center',
-    paddingHorizontal: 20,
+    padding: 20,
   },
   loadingContainer: {
     flex: 1,
@@ -103,76 +114,88 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff',
   },
   header: {
-    width: '100%',
-    height: 250,
-    position: 'relative',
-    marginBottom: 30,
-  },
-  headerBackground: {
-    width: '100%',
-    height: '100%',
-    resizeMode: 'cover',
-    borderRadius: 20,
-  },
-  headerOverlay: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0,0,0,0.5)', // Oscurecer la imagen de fondo
-  },
-  profileSection: {
-    position: 'absolute',
-    bottom: -50,
-    left: '50%',
-    transform: [{ translateX: -50 }],
     alignItems: 'center',
+    marginVertical: 30,
+    backgroundColor: '#fff',
+    padding: 20,
+    borderRadius: 20,
+    width: '100%',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+    elevation: 5,
+  },
+  profileImageContainer: {
+    position: 'relative',
   },
   profileImage: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    borderColor: '#ff3c5e',
+    width: 150,
+    height: 150,
+    borderRadius: 70,
     borderWidth: 3,
-    marginBottom: 10,
+    borderColor: '#ff3c5e',
+  },
+  changeImageOverlay: {
+    position: 'absolute',
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    width: '100%',
+    alignItems: 'center',
+    paddingVertical: 5,
+    borderBottomLeftRadius: 60,
+    borderBottomRightRadius: 60,
+  },
+  changeImageText: {
+    color: '#fff',
+    fontSize: 12,
   },
   profileName: {
     fontSize: 24,
-    fontWeight: 'bold',
-    color: '#ffffff',
+    fontWeight: '600',
+    color: '#333',
+    marginTop: 15,
   },
   profileEmail: {
     fontSize: 16,
-    color: '#cccccc',
+    color: '#777',
     marginTop: 5,
   },
   infoContainer: {
     width: '100%',
-    marginBottom: 20,
     backgroundColor: '#ffffff',
     borderRadius: 15,
     padding: 20,
-    elevation: 3,
+    marginVertical: 20,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 3,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+    elevation: 5,
   },
   infoItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 15,
+    marginBottom: 10,
   },
   infoText: {
     marginLeft: 10,
     fontSize: 16,
-    color: '#333',
+    color: '#444',
   },
   logoutButton: {
     marginTop: 20,
-    paddingVertical: 15,
+    paddingVertical: 12,
     paddingHorizontal: 30,
     backgroundColor: '#ff3c5e',
-    borderRadius: 30,
+    borderRadius: 25,
     alignItems: 'center',
-    width: '100%',
+    width: '80%',
+    elevation: 5,
+    shadowColor: '#ff3c5e',
+    shadowOffset: { width: 0, height: 5 },
+    shadowOpacity: 0.4,
+    shadowRadius: 10,
   },
   logoutButtonText: {
     color: '#ffffff',

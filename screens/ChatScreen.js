@@ -2,78 +2,41 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, ScrollView, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import * as ImagePicker from 'expo-image-picker';
-import { getFirestore, collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth'; 
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage'; 
-import { db } from '../firebase'; // Firestore configurado
+import { db } from '../firebase';
 
 const ChatScreen = ({ navigation }) => {
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([
     {
       id: 1,
-      text: '¡Hola! Soy tu asistente para ayudarte con información sobre dermatitis. ¿En qué puedo ayudarte hoy?',
+      text: '¡Hola! Soy tu asistente para ayudarte con información sobre dermatitis. Puedes preguntar sobre:\n- Diagnóstico\n- Preguntas sobre Dermatitis\n- Contacto\n¿Qué tema te gustaría explorar?',
       isBot: true,
     },
   ]);
   const [selectedImage, setSelectedImage] = useState(null);
-  const auth = getAuth(); 
-  const storage = getStorage(); 
+  const auth = getAuth();
+  const storage = getStorage();
 
-  // Función para subir la imagen a Firebase Storage y obtener su URL
-  const uploadImageAsync = async (uri) => {
-    try {
-      const response = await fetch(uri);
-      const blob = await response.blob();
-      const storageRef = ref(storage, imagenes/Date.now()); 
-      const snapshot = await uploadBytes(storageRef, blob); 
-      const downloadURL = await getDownloadURL(snapshot.ref); 
-      return downloadURL;
-    } catch (error) {
-      console.error('Error al subir la imagen:', error);
-      throw new Error('Error de red. No se pudo subir la imagen.');
+  // Función para manejar las respuestas del chatbot
+  const handleBotResponse = (userMessage) => {
+    let botResponse = '';
+
+    if (/diagnóstico/i.test(userMessage)) {
+      botResponse = 'Para un diagnóstico inicial, puedes describirme tus síntomas. Ten en cuenta que esto no sustituye una consulta médica.';
+    } else if (/preguntas/i.test(userMessage)) {
+      botResponse = 'Algunas preguntas frecuentes sobre dermatitis son:\n1. ¿Qué es la dermatitis?\n2. ¿Cuáles son los síntomas comunes?\n3. ¿Cuáles son los tratamientos?';
+    } else if (/contacto/i.test(userMessage)) {
+      botResponse = 'Puedes contactar con nuestros especialistas en dermatitis llamando al +1 234 567 8900 o enviándonos un correo a contacto@chatderm.com.';
+    } else if (/síntomas|qué es la dermatitis|tratamiento/i.test(userMessage)) {
+      botResponse = 'La dermatitis es una inflamación de la piel que puede causar enrojecimiento, picazón y molestias. Los tratamientos dependen del tipo y la severidad, pero suelen incluir cremas y evitar los irritantes.';
+    } else {
+      botResponse = 'Lo siento, no entendí tu pregunta. Intenta preguntar sobre "Diagnóstico", "Preguntas sobre Dermatitis" o "Contacto".';
     }
-  };
 
-  // Función para seleccionar la imagen y subirla a Firebase Storage
-  const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
-
-    if (!result.cancelled) {
-      setSelectedImage(result.uri);
-      Alert.alert('Imagen seleccionada', '¡Tu imagen ha sido seleccionada con éxito!');
-
-      // Subir la imagen seleccionada a Firebase Storage
-      try {
-        const imageURL = await uploadImageAsync(result.uri);
-        Alert.alert('Subida de imagen exitosa', 'La imagen se ha subido con éxito: '+{imageURL});
-        
-        const user = auth.currentUser;
-        if (user) {
-          const logRef = collection(db, 'Usuarios', user.uid, 'Chatbot_Logs');
-          await addDoc(logRef, {
-            ImagenURL: imageURL,
-            Pregunta: 'Imagen subida para diagnóstico',
-            Respuesta: 'Esperando diagnóstico...',
-            FechaLog: serverTimestamp(),
-          });
-
-          setMessages((prevMessages) => [
-            ...prevMessages,
-            { id: Date.now(), text: 'Imagen subida para diagnóstico', isBot: false },
-            { id: Date.now() + 1, text: 'Esperando diagnóstico...', isBot: true },
-          ]);
-        }
-      } catch (error) {
-        console.error('Error al subir la imagen:', error);
-        Alert.alert('Error', 'Hubo un problema al subir la imagen.');
-      }
-    }
+    return botResponse;
   };
 
   // Función para enviar mensaje de texto
@@ -82,8 +45,9 @@ const ChatScreen = ({ navigation }) => {
       const userMessage = { id: Date.now(), text: message, isBot: false };
       setMessages((prevMessages) => [...prevMessages, userMessage]);
 
-      // Simular una respuesta automática del bot
-      const botResponse = { id: Date.now() + 1, text: 'Esta es una respuesta automática del bot.', isBot: true };
+      // Obtener respuesta del bot
+      const botResponseText = handleBotResponse(message);
+      const botResponse = { id: Date.now() + 1, text: botResponseText, isBot: true };
       setMessages((prevMessages) => [...prevMessages, botResponse]);
 
       // Guardar la interacción en Firestore
@@ -108,18 +72,72 @@ const ChatScreen = ({ navigation }) => {
     }
   };
 
+  // Función para subir la imagen a Firebase Storage y obtener su URL
+  const uploadImageAsync = async (uri) => {
+    try {
+      const response = await fetch(uri);
+      const blob = await response.blob();
+      const storageRef = ref(storage, `imagenes/${Date.now()}`); 
+      const snapshot = await uploadBytes(storageRef, blob); 
+      const downloadURL = await getDownloadURL(snapshot.ref); 
+      return downloadURL;
+    } catch (error) {
+      console.error('Error al subir la imagen a Firebase:', error);
+      Alert.alert('Error', 'Hubo un problema al subir la imagen. Verifica tu conexión o permisos de Firebase.');
+      throw new Error('Error de red. No se pudo subir la imagen.');
+    }
+  };
+
+  // Función para seleccionar la imagen y subirla a Firebase Storage
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.cancelled) {
+      setSelectedImage(result.uri);
+      Alert.alert('Imagen seleccionada', '¡Tu imagen ha sido seleccionada con éxito!');
+
+      // Subir la imagen seleccionada a Firebase Storage
+      try {
+        const imageURL = await uploadImageAsync(result.uri);
+        Alert.alert('Subida de imagen exitosa', 'La imagen se ha subido con éxito.');
+
+        const user = auth.currentUser;
+        if (user) {
+          const logRef = collection(db, 'Usuarios', user.uid, 'Chatbot_Logs');
+          await addDoc(logRef, {
+            ImagenURL: imageURL,
+            Pregunta: 'Imagen subida para diagnóstico',
+            Respuesta: 'Esperando diagnóstico...',
+            FechaLog: serverTimestamp(),
+          });
+
+          setMessages((prevMessages) => [
+            ...prevMessages,
+            { id: Date.now(), text: 'Imagen subida para diagnóstico', isBot: false },
+            { id: Date.now() + 1, text: 'Esperando diagnóstico...', isBot: true },
+          ]);
+        }
+      } catch (error) {
+        console.error('Error al subir la imagen:', error);
+        Alert.alert('Error', 'Hubo un problema al subir la imagen.');
+      }
+    }
+  };
+
   return (
     <View style={styles.container}>
       {/* Header del Chat */}
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Icon name="arrow-left" size={28} color="#ffffff" />
-        </TouchableOpacity>
         <Image
-          source={require('../assets/profile-image.png')} 
+          source={require('../assets/logo.png')} 
           style={styles.profileImage}
         />
-        <Text style={styles.chatTitle}>Asistente Virtual</Text>
+        <Text style={styles.chatTitle}>ChatDerm</Text>
       </View>
 
       {/* Contenedor de Mensajes */}
