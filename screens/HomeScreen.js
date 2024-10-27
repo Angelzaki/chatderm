@@ -14,7 +14,10 @@ const HomeScreen = ({ navigation }) => {
         />
         <Text style={styles.headerTitle}>chatderm - Tu Clínica Virtual de Dermatología</Text>
         <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
-          <Icon name="user-circle" size={28} color="#ffffff" />
+            <Image
+              source={require('../assets/choco.webp')} // Logo de chatderm
+              style={styles.logo}
+            />
         </TouchableOpacity>
       </View>
 
@@ -27,7 +30,7 @@ const HomeScreen = ({ navigation }) => {
         <View style={styles.cardContainer}>
           {/* Dermatitis Atópica */}
           <View style={styles.card}>
-            <Image source={require('../assets/chatderm.png')} style={styles.cardImage} />
+            <Image source={require('../assets/da.jpeg')} style={styles.cardImage} />
             <Text style={styles.cardTitle}>Dermatitis Atópica</Text>
             <Text style={styles.cardDescription}>
               La dermatitis atópica es un tipo de eccema que causa picazón e inflamación.
@@ -39,7 +42,7 @@ const HomeScreen = ({ navigation }) => {
 
           {/* Dermatitis de Contacto */}
           <View style={styles.card}>
-            <Image source={require('../assets/chatderm.png')} style={styles.cardImage} />
+            <Image source={require('../assets/dc.jpeg')} style={styles.cardImage} />
             <Text style={styles.cardTitle}>Dermatitis de Contacto</Text>
             <Text style={styles.cardDescription}>
               La dermatitis de contacto se presenta cuando la piel entra en contacto con una sustancia irritante.
@@ -51,7 +54,7 @@ const HomeScreen = ({ navigation }) => {
 
           {/* Dermatitis Seborreica */}
           <View style={styles.card}>
-            <Image source={require('../assets/chatderm.png')} style={styles.cardImage} />
+            <Image source={require('../assets/ds.jpg')} style={styles.cardImage} />
             <Text style={styles.cardTitle}>Dermatitis Seborreica</Text>
             <Text style={styles.cardDescription}>
               La dermatitis seborreica causa piel roja y escamosa, generalmente en el cuero cabelludo.
