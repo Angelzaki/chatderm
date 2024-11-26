@@ -4,12 +4,12 @@ import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCP1qGEC32JdAdaQ3pk3xgNq32vYXPqB70",
-  authDomain: "chatderm-a65c0.firebaseapp.com",
-  projectId: "chatderm-a65c0",
-  storageBucket: "chatderm-a65c0.appspot.com",
-  messagingSenderId: "1038720370031",
-  appId: "1:1038720370031:web:c8769db7517ab15da8549a"
+  apiKey: "",
+  authDomain: "",
+  projectId: "",
+  storageBucket: "",
+  messagingSenderId: "",
+  appId: ""
 };
 
 const appFirebase = initializeApp(firebaseConfig);
