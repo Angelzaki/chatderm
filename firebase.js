@@ -1,9 +1,8 @@
-// Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
+import { getStorage } from "firebase/storage";
 
-// Your web app's Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyCP1qGEC32JdAdaQ3pk3xgNq32vYXPqB70",
   authDomain: "chatderm-a65c0.firebaseapp.com",
@@ -13,14 +12,9 @@ const firebaseConfig = {
   appId: "1:1038720370031:web:c8769db7517ab15da8549a"
 };
 
-// Initialize Firebase
 const appFirebase = initializeApp(firebaseConfig);
-
-// Get the authentication instance
 const auth = getAuth(appFirebase);
-
-// Get the Firestore database instance
 const db = getFirestore(appFirebase);
+const storage = getStorage(appFirebase);
 
-// Export the initialized instances
-export { appFirebase, auth, db };
+export { auth, db, storage };

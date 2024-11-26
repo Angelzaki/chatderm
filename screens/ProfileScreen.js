@@ -64,10 +64,11 @@ const ProfileScreen = ({ navigation }) => {
   return (
     <ScrollView style={styles.scrollContainer}>
       <View style={styles.container}>
+        {/* Header Section */}
         <View style={styles.header}>
           <TouchableOpacity onPress={handleImageChange} style={styles.profileImageContainer}>
             <Image
-              source={userData?.infoText ? { uri: userData.infoText } : require('../assets/choco.webp')}
+              source={userData?.infoText ? { uri: userData.infoText } : require('../assets/choco2.webp')}
               style={styles.profileImage}
             />
           </TouchableOpacity>
@@ -75,13 +76,32 @@ const ProfileScreen = ({ navigation }) => {
           <Text style={styles.profileEmail}>{userData?.Email || 'Correo no disponible'}</Text>
         </View>
 
-        <View style={styles.infoContainer}>
-          <View style={styles.infoItem}>
-            <Icon name="id-card" size={20} color="#ff3c5e" />
-            <Text style={styles.infoText}>{userData?.Rol || 'Rol no disponible'}</Text>
+        {/* Role Section */}
+        <View style={styles.roleContainer}>
+          <View style={styles.roleCard}>
+            <Icon name="id-card" size={28} color="#fff" />
+            <Text style={styles.roleText}>{userData?.Rol || 'Rol no disponible'}</Text>
           </View>
         </View>
 
+        {/* Analytics Section */}
+        <View style={styles.analyticsContainer}>
+          <Text style={styles.analyticsTitle}>Detalles del Perfil</Text>
+          <View style={styles.analyticsCard}>
+            <View style={styles.analyticsItem}>
+              <Icon name="envelope" size={24} color="#ff6b81" />
+              <Text style={styles.analyticsLabel}>Email:</Text>
+              <Text style={styles.analyticsValue}>{userData?.Email}</Text>
+            </View>
+            <View style={styles.analyticsItem}>
+              <Icon name="user" size={24} color="#ff6b81" />
+              <Text style={styles.analyticsLabel}>Nombre:</Text>
+              <Text style={styles.analyticsValue}>{userData?.Nombre}</Text>
+            </View>
+          </View>
+        </View>
+
+        {/* Logout Button */}
         <TouchableOpacity
           style={styles.logoutButton}
           onPress={() => {
@@ -100,7 +120,7 @@ const ProfileScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   scrollContainer: {
     flex: 1,
-    backgroundColor: '#f2f2f7',
+    backgroundColor: '#f7f8fa',
   },
   container: {
     flex: 1,
@@ -115,14 +135,14 @@ const styles = StyleSheet.create({
   },
   header: {
     alignItems: 'center',
-    marginVertical: 30,
+    marginVertical: 20,
     backgroundColor: '#fff',
-    padding: 20,
+    padding: 30,
     borderRadius: 20,
     width: '100%',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.2,
     shadowRadius: 10,
     elevation: 5,
   },
@@ -130,75 +150,98 @@ const styles = StyleSheet.create({
     position: 'relative',
   },
   profileImage: {
-    width: 150,
-    height: 150,
-    borderRadius: 70,
-    borderWidth: 3,
-    borderColor: '#ff3c5e',
-  },
-  changeImageOverlay: {
-    position: 'absolute',
-    bottom: 0,
-    backgroundColor: 'rgba(0, 0, 0, 0.6)',
-    width: '100%',
-    alignItems: 'center',
-    paddingVertical: 5,
-    borderBottomLeftRadius: 60,
-    borderBottomRightRadius: 60,
-  },
-  changeImageText: {
-    color: '#fff',
-    fontSize: 12,
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    borderWidth: 4,
+    borderColor: '#ff6b81',
   },
   profileName: {
-    fontSize: 24,
-    fontWeight: '600',
+    fontSize: 22,
+    fontWeight: 'bold',
     color: '#333',
-    marginTop: 15,
+    marginTop: 10,
   },
   profileEmail: {
     fontSize: 16,
-    color: '#777',
+    color: '#666',
     marginTop: 5,
   },
-  infoContainer: {
-    width: '100%',
-    backgroundColor: '#ffffff',
-    borderRadius: 15,
-    padding: 20,
-    marginVertical: 20,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 10,
-    elevation: 5,
+  roleContainer: {
+    marginTop: 20,
+    width: '90%',
   },
-  infoItem: {
+  roleCard: {
+    backgroundColor: '#ff6b81',
+    padding: 15,
+    borderRadius: 15,
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 5 },
+    shadowOpacity: 0.2,
+    shadowRadius: 10,
+    elevation: 5,
+  },
+  roleText: {
+    marginLeft: 10,
+    fontSize: 18,
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+  analyticsContainer: {
+    width: '100%',
+    marginTop: 30,
+  },
+  analyticsTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#333',
     marginBottom: 10,
   },
-  infoText: {
+  analyticsCard: {
+    backgroundColor: '#fff',
+    borderRadius: 15,
+    padding: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 5 },
+    shadowOpacity: 0.2,
+    shadowRadius: 10,
+    elevation: 5,
+  },
+  analyticsItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 15,
+  },
+  analyticsLabel: {
     marginLeft: 10,
     fontSize: 16,
-    color: '#444',
+    color: '#555',
+    fontWeight: '600',
+  },
+  analyticsValue: {
+    marginLeft: 10,
+    fontSize: 16,
+    color: '#333',
+    fontWeight: 'bold',
   },
   logoutButton: {
-    marginTop: 20,
-    paddingVertical: 12,
-    paddingHorizontal: 30,
-    backgroundColor: '#ff3c5e',
-    borderRadius: 25,
+    marginTop: 30,
+    paddingVertical: 15,
+    backgroundColor: '#ff6b81',
+    borderRadius: 30,
     alignItems: 'center',
     width: '80%',
-    elevation: 5,
-    shadowColor: '#ff3c5e',
+    shadowColor: '#ff6b81',
     shadowOffset: { width: 0, height: 5 },
-    shadowOpacity: 0.4,
+    shadowOpacity: 0.5,
     shadowRadius: 10,
+    elevation: 5,
   },
   logoutButtonText: {
-    color: '#ffffff',
+    color: '#fff',
     fontSize: 16,
     fontWeight: 'bold',
   },
