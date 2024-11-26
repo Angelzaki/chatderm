@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import Modal from 'react-native-modal';
 import { auth, db } from '../firebase'; // Asegúrate de importar auth y db correctamente
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { setDoc, doc } from 'firebase/firestore';
@@ -13,6 +14,8 @@ const RegisterScreen = ({ navigation }) => {
   const [edad, setEdad] = useState('');
   const [rol, setRol] = useState('Paciente'); // Por defecto, el rol es "Paciente"
   const [isChecked, setIsChecked] = useState(false);
+  const [isModalVisible, setModalVisible] = useState(false);
+  const [modalMessage, setModalMessage] = useState('');
 
   const toggleCheckbox = () => {
     setIsChecked(!isChecked);
@@ -20,7 +23,14 @@ const RegisterScreen = ({ navigation }) => {
 
   const handleRegister = async () => {
     if (!isChecked) {
-      Alert.alert('Términos y condiciones', 'Debes aceptar los términos y condiciones para registrarte');
+      setModalMessage('Debes aceptar los términos y condiciones para registrarte');
+      setModalVisible(true);
+      return;
+    }
+
+    if (password.length < 8 || password.length > 12) {
+      setModalMessage('La contraseña debe tener entre 8 y 12 caracteres.');
+      setModalVisible(true);
       return;
     }
 
@@ -30,7 +40,7 @@ const RegisterScreen = ({ navigation }) => {
       const user = userCredential.user;
 
       // Guardar datos adicionales en Firestore
-      await setDoc(doc(db, 'Usuarios',user.uid), {
+      await setDoc(doc(db, 'Usuarios', user.uid), {
         Nombre: nombre,
         Email: email,
         Edad: parseInt(edad), // Convertir la edad a número
@@ -39,10 +49,15 @@ const RegisterScreen = ({ navigation }) => {
         FechaRegistro: new Date(), // Guarda también la fecha de creación
       });
 
-      Alert.alert('Registro exitoso', 'Usuario registrado exitosamente');
-      navigation.replace('Login'); // Redirigir a la pantalla de login después del registro
+      setModalMessage('Usuario registrado exitosamente');
+      setModalVisible(true);
+      setTimeout(() => {
+        setModalVisible(false);
+        navigation.replace('Login'); // Redirigir a la pantalla de login después del registro
+      }, 2000);
     } catch (error) {
-      Alert.alert('Error', error.message);
+      setModalMessage(error.message);
+      setModalVisible(true);
     }
   };
 
@@ -126,6 +141,17 @@ const RegisterScreen = ({ navigation }) => {
           <Text style={styles.buttonText}>CREAR CUENTA</Text>
         </LinearGradient>
       </TouchableOpacity>
+
+      {/* Modal */}
+      <Modal isVisible={isModalVisible}>
+        <View style={styles.modalContent}>
+          <Icon name="info-circle" size={60} color="#ff4b2b" />
+          <Text style={styles.modalText}>{modalMessage}</Text>
+          <TouchableOpacity style={styles.modalButton} onPress={() => setModalVisible(false)}>
+            <Text style={styles.modalButtonText}>Cerrar</Text>
+          </TouchableOpacity>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -214,6 +240,31 @@ const styles = StyleSheet.create({
   roleText: {
     fontSize: 16,
     color: '#ffffff',
+  },
+  modalContent: {
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    padding: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 10,
+    borderColor: 'rgba(0, 0, 0, 0.1)',
+  },
+  modalText: {
+    fontSize: 18,
+    textAlign: 'center',
+    marginBottom: 20,
+    color: '#333333',
+  },
+  modalButton: {
+    backgroundColor: '#ff4b2b',
+    borderRadius: 25,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+  },
+  modalButtonText: {
+    color: '#ffffff',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
 

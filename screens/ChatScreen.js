@@ -1,167 +1,213 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, ScrollView, Alert } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  Image,
+  ScrollView,
+  Alert,
+} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import * as ImagePicker from 'expo-image-picker';
+import { db } from '../firebase'; // Importa Firebase
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
-import { getAuth } from 'firebase/auth'; 
-import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage'; 
-import { db } from '../firebase';
 
-const ChatScreen = ({ navigation }) => {
+const ChatScreen = () => {
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([
     {
       id: 1,
-      text: '¡Hola! Soy tu asistente para ayudarte con información sobre dermatitis. Puedes preguntar sobre:\n- Diagnóstico\n- Preguntas sobre Dermatitis\n- Contacto\n¿Qué tema te gustaría explorar?',
+      text: '¡Hola! Soy tu asistente para ayudarte con información sobre dermatitis. Puedes elegir entre las siguientes opciones:',
       isBot: true,
+      options: [
+        { text: 'Diagnóstico', action: 'diagnóstico' },
+        { text: 'Preguntas sobre Dermatitis', action: 'preguntas' },
+        { text: 'Contacto', action: 'contacto' },
+      ],
     },
   ]);
   const [selectedImage, setSelectedImage] = useState(null);
-  const auth = getAuth();
-  const storage = getStorage();
+  const inactivityTimer = useRef(null);
 
-  // Función para manejar las respuestas del chatbot
-  const handleBotResponse = (userMessage) => {
-    let botResponse = '';
-
-    if (/diagnóstico/i.test(userMessage)) {
-      botResponse = 'Para un diagnóstico inicial, puedes describirme tus síntomas. Ten en cuenta que esto no sustituye una consulta médica.';
-    } else if (/preguntas/i.test(userMessage)) {
-      botResponse = 'Algunas preguntas frecuentes sobre dermatitis son:\n1. ¿Qué es la dermatitis?\n2. ¿Cuáles son los síntomas comunes?\n3. ¿Cuáles son los tratamientos?';
-    } else if (/contacto/i.test(userMessage)) {
-      botResponse = 'Puedes contactar con nuestros especialistas en dermatitis llamando al +1 234 567 8900 o enviándonos un correo a contacto@chatderm.com.';
-    } else if (/síntomas|qué es la dermatitis|tratamiento/i.test(userMessage)) {
-      botResponse = 'La dermatitis es una inflamación de la piel que puede causar enrojecimiento, picazón y molestias. Los tratamientos dependen del tipo y la severidad, pero suelen incluir cremas y evitar los irritantes.';
-    } else {
-      botResponse = 'Lo siento, no entendí tu pregunta. Intenta preguntar sobre "Diagnóstico", "Preguntas sobre Dermatitis" o "Contacto".';
-    }
-
-    return botResponse;
+  // Reiniciar temporizador de inactividad
+  const resetInactivityTimer = () => {
+    if (inactivityTimer.current) clearTimeout(inactivityTimer.current);
+    inactivityTimer.current = setTimeout(() => {
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        {
+          id: Date.now(),
+          text: 'Parece que te quedaste dormido jajaja. Aquí están las opciones nuevamente:',
+          isBot: true,
+          options: [
+            { text: 'Diagnóstico', action: 'diagnóstico' },
+            { text: 'Preguntas sobre Dermatitis', action: 'preguntas' },
+            { text: 'Contacto', action: 'contacto' },
+          ],
+        },
+      ]);
+    }, 60000); // 60 segundos de inactividad
   };
 
-  // Función para enviar mensaje de texto
-  const handleSend = async () => {
-    if (message.trim()) {
-      const userMessage = { id: Date.now(), text: message, isBot: false };
-      setMessages((prevMessages) => [...prevMessages, userMessage]);
-
-      // Obtener respuesta del bot
-      const botResponseText = handleBotResponse(message);
-      const botResponse = { id: Date.now() + 1, text: botResponseText, isBot: true };
-      setMessages((prevMessages) => [...prevMessages, botResponse]);
-
-      // Guardar la interacción en Firestore
-      try {
-        const user = auth.currentUser; 
-        if (user) {
-          const logRef = collection(db, 'Usuarios', user.uid, 'Chatbot_Logs'); 
-          await addDoc(logRef, {
-            Pregunta: message,
-            Respuesta: botResponse.text,
-            FechaLog: serverTimestamp(),
-          });
-          console.log('Interacción guardada en Firestore');
-        } else {
-          Alert.alert('Error', 'No se pudo autenticar al usuario.');
-        }
-      } catch (error) {
-        console.error('Error al guardar el mensaje en Firestore:', error);
-      }
-
-      setMessage(''); 
-    }
-  };
-
-  // Función para subir la imagen a Firebase Storage y obtener su URL
-  const uploadImageAsync = async (uri) => {
+  // Guardar diagnóstico en Firebase
+  const saveDiagnosisToFirebase = async (diagnosis) => {
     try {
-      const response = await fetch(uri);
-      const blob = await response.blob();
-      const storageRef = ref(storage, `imagenes/${Date.now()}`); 
-      const snapshot = await uploadBytes(storageRef, blob); 
-      const downloadURL = await getDownloadURL(snapshot.ref); 
-      return downloadURL;
+      await addDoc(collection(db, 'Diagnosticos'), {
+        Tipo: diagnosis,
+        Fecha: serverTimestamp(),
+        UsuarioID: null, // Puedes agregar el ID del usuario autenticado si es necesario
+      });
+      console.log('Diagnóstico guardado en Firebase:', diagnosis);
     } catch (error) {
-      console.error('Error al subir la imagen a Firebase:', error);
-      Alert.alert('Error', 'Hubo un problema al subir la imagen. Verifica tu conexión o permisos de Firebase.');
-      throw new Error('Error de red. No se pudo subir la imagen.');
+      console.error('Error al guardar el diagnóstico en Firebase:', error);
     }
   };
 
-  // Función para seleccionar la imagen y subirla a Firebase Storage
-  const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
+  // Manejar opciones del bot
+  const handleBotOption = (action) => {
+    resetInactivityTimer();
+    switch (action) {
+      case 'diagnóstico':
+        setMessages((prevMessages) => [
+          ...prevMessages,
+          { id: Date.now(), text: 'Por favor, inserta una imagen para realizar el diagnóstico.', isBot: true },
+        ]);
+        break;
+      case 'preguntas':
+        setMessages((prevMessages) => [
+          ...prevMessages,
+          { id: Date.now(), text: '¿Cuál es tu pregunta sobre dermatitis?', isBot: true },
+        ]);
+        break;
+      case 'contacto':
+        setMessages((prevMessages) => [
+          ...prevMessages,
+          { id: Date.now(), text: 'Puedes contactar al Centro de Salud al número +51 925518365.', isBot: true },
+        ]);
+        break;
+      default:
+        break;
+    }
+  };
 
-    if (!result.cancelled) {
-      setSelectedImage(result.uri);
-      Alert.alert('Imagen seleccionada', '¡Tu imagen ha sido seleccionada con éxito!');
+  // Subir imagen al servidor y obtener diagnóstico
+  const uploadImageToServer = async (uri) => {
+    try {
+      const formData = new FormData();
+      formData.append('photo', {
+        uri,
+        name: `photo.jpg`,
+        type: `image/jpeg`,
+      });
 
-      // Subir la imagen seleccionada a Firebase Storage
-      try {
-        const imageURL = await uploadImageAsync(result.uri);
-        Alert.alert('Subida de imagen exitosa', 'La imagen se ha subido con éxito.');
+      const response = await fetch('http://192.168.100.6:3000/upload', {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
 
-        const user = auth.currentUser;
-        if (user) {
-          const logRef = collection(db, 'Usuarios', user.uid, 'Chatbot_Logs');
-          await addDoc(logRef, {
-            ImagenURL: imageURL,
-            Pregunta: 'Imagen subida para diagnóstico',
-            Respuesta: 'Esperando diagnóstico...',
-            FechaLog: serverTimestamp(),
-          });
-
-          setMessages((prevMessages) => [
-            ...prevMessages,
-            { id: Date.now(), text: 'Imagen subida para diagnóstico', isBot: false },
-            { id: Date.now() + 1, text: 'Esperando diagnóstico...', isBot: true },
-          ]);
-        }
-      } catch (error) {
-        console.error('Error al subir la imagen:', error);
-        Alert.alert('Error', 'Hubo un problema al subir la imagen.');
+      if (!response.ok) {
+        throw new Error('Error en el servidor al procesar la imagen');
       }
+
+      const data = await response.json();
+      const diagnosis = data.diagnosis; // Diagnóstico recibido del servidor
+
+      // Guardar diagnóstico en Firebase
+      await saveDiagnosisToFirebase(diagnosis);
+
+      return diagnosis; // Retorna el diagnóstico para mostrarlo en el chat
+    } catch (error) {
+      console.error('Error al subir la imagen al servidor:', error);
+      Alert.alert('Error', 'No se pudo procesar la imagen en el servidor.');
+      throw error;
     }
   };
+
+  // Seleccionar imagen
+  const pickImage = async () => {
+    resetInactivityTimer();
+    try {
+      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (status !== 'granted') {
+        Alert.alert('Permisos necesarios', 'Se requieren permisos para acceder a la galería.');
+        return;
+      }
+
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 1,
+      });
+
+      if (!result.canceled && result.assets && result.assets[0]) {
+        const uri = result.assets[0].uri;
+        setSelectedImage(uri);
+
+        // Subir imagen al servidor y obtener diagnóstico
+        const diagnosis = await uploadImageToServer(uri);
+
+        // Mostrar el diagnóstico en el chat
+        setMessages((prevMessages) => [
+          ...prevMessages,
+          { id: Date.now(), text: `Diagnóstico: ${diagnosis}`, isBot: true },
+        ]);
+      }
+    } catch (error) {
+      console.error('Error al seleccionar o subir la imagen:', error);
+      Alert.alert('Error', 'No se pudo subir la imagen.');
+    }
+  };
+
+  useEffect(() => {
+    resetInactivityTimer();
+    return () => clearTimeout(inactivityTimer.current); // Limpiar temporizador al desmontar
+  }, []);
 
   return (
     <View style={styles.container}>
-      {/* Header del Chat */}
       <View style={styles.header}>
-        <Image
-          source={require('../assets/logo.png')} 
-          style={styles.profileImage}
-        />
+        <Image source={require('../assets/logo2.png')} style={styles.profileImage} />
         <Text style={styles.chatTitle}>ChatDerm</Text>
       </View>
-
-      {/* Contenedor de Mensajes */}
       <ScrollView style={styles.messagesContainer}>
         {messages.map((msg) => (
           <View
             key={msg.id}
-            style={[styles.messageBubble, msg.isBot ? styles.botBubble : styles.userBubble]}
+            style={msg.isBot ? styles.botBubble : styles.userBubble}
           >
-            <Text style={[styles.messageText, msg.isBot ? styles.botText : styles.userText]}>
-              {msg.text}
-            </Text>
+            <Text style={styles.messageText}>{msg.text}</Text>
+            {msg.options && (
+              <View style={styles.optionsContainer}>
+                {msg.options.map((option, index) => (
+                  <TouchableOpacity
+                    key={index}
+                    style={styles.optionButton}
+                    onPress={() => handleBotOption(option.action)}
+                  >
+                    <Text style={styles.optionText}>{option.text}</Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            )}
           </View>
         ))}
         {selectedImage && (
-          <Image source={{ uri: selectedImage }} style={styles.selectedImage} />
+          <Image source={{ uri: selectedImage }} style={styles.userImage} />
         )}
       </ScrollView>
-
-      {/* Barra de Entrada de Mensaje */}
       <View style={styles.inputContainer}>
         <TextInput
           value={message}
-          onChangeText={setMessage}
+          onChangeText={(text) => {
+            resetInactivityTimer();
+            setMessage(text);
+          }}
           style={styles.input}
           placeholder="Escribe un mensaje..."
           placeholderTextColor="#aaaaaa"
@@ -169,7 +215,7 @@ const ChatScreen = ({ navigation }) => {
         <TouchableOpacity style={styles.iconButton} onPress={pickImage}>
           <Icon name="paperclip" size={24} color="#ff3c5e" />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.iconButton} onPress={handleSend}>
+        <TouchableOpacity style={styles.iconButton}>
           <Icon name="send" size={24} color="#ff3c5e" />
         </TouchableOpacity>
       </View>
@@ -178,67 +224,51 @@ const ChatScreen = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f5f5f5',
-  },
+  container: { flex: 1, backgroundColor: '#f9f9f9' },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     padding: 15,
-    backgroundColor: '#ff3c5e',
+    backgroundColor: 'red',
     borderBottomLeftRadius: 20,
     borderBottomRightRadius: 20,
     elevation: 5,
   },
-  profileImage: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    marginLeft: 10,
-    borderColor: '#ffffff',
-    borderWidth: 2,
-  },
-  chatTitle: {
-    marginLeft: 15,
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#ffffff',
-  },
-  messagesContainer: {
-    flex: 1,
-    paddingHorizontal: 20,
-    marginTop: 10,
-  },
-  messageBubble: {
+  profileImage: { width: 50, height: 50, borderRadius: 25 },
+  chatTitle: { marginLeft: 15, fontSize: 22, fontWeight: 'bold', color: '#ffffff' },
+  messagesContainer: { flex: 1, paddingHorizontal: 20, marginTop: 10 },
+  botBubble: {
+    alignSelf: 'flex-start',
+    backgroundColor: '#e8eaf6',
     padding: 15,
     borderRadius: 20,
     marginVertical: 5,
     maxWidth: '80%',
   },
-  botBubble: {
-    alignSelf: 'flex-start',
-    backgroundColor: '#e0e0e0',
-  },
   userBubble: {
     alignSelf: 'flex-end',
-    backgroundColor: '#ff3c5e',
+    backgroundColor: 'red',
+    padding: 15,
+    borderRadius: 20,
+    marginVertical: 5,
+    maxWidth: '80%',
   },
-  messageText: {
-    fontSize: 16,
+  messageText: { fontSize: 16, color: '#333' },
+  optionsContainer: { marginTop: 10 },
+  optionButton: {
+    backgroundColor: 'red',
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    borderRadius: 20,
+    marginBottom: 5,
   },
-  botText: {
-    color: '#333',
-  },
-  userText: {
-    color: '#fff',
-  },
-  selectedImage: {
+  optionText: { color: '#ffffff', fontSize: 16, textAlign: 'center' },
+  userImage: {
     width: 150,
     height: 150,
+    borderRadius: 15,
     alignSelf: 'flex-end',
     marginTop: 10,
-    borderRadius: 15,
   },
   inputContainer: {
     flexDirection: 'row',
@@ -256,9 +286,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#f0f0f0',
     color: '#333',
   },
-  iconButton: {
-    marginLeft: 10,
-  },
+  iconButton: { marginLeft: 10 },
 });
 
 export default ChatScreen;

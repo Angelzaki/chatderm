@@ -1,119 +1,180 @@
-import React from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
+import React, { useState } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  ScrollView,
+  Modal,
+} from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import Icon from 'react-native-vector-icons/FontAwesome';
 
-const HomeScreen = ({ navigation }) => {
+const HomeScreen = () => {
+  const [selectedType, setSelectedType] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
+
+  // Información detallada sobre cada tipo de dermatitis
+  const dermatitisInfo = {
+    atopica: {
+      title: 'Dermatitis Atópica',
+      description:
+        'Es una afección crónica que causa picazón, inflamación y sequedad en la piel. Aunque no tiene cura, puede controlarse con tratamientos tópicos, hidratación frecuente y evitando desencadenantes como el estrés o ciertos alimentos.',
+      recommendation: 'Te recomendamos usar nuestro chatbot para obtener orientación personalizada.',
+    },
+    contacto: {
+      title: 'Dermatitis de Contacto',
+      description:
+        'Se produce cuando la piel entra en contacto con una sustancia irritante o alergénica, como productos químicos o plantas. Los síntomas incluyen enrojecimiento, picazón y ampollas en áreas específicas de la piel.',
+      recommendation: 'Consulta con nuestro chatbot para identificar posibles desencadenantes y cuidados.',
+    },
+    seborreica: {
+      title: 'Dermatitis Seborreica',
+      description:
+        'Es una afección cutánea común que provoca enrojecimiento y descamación, especialmente en áreas con alta producción de sebo como el cuero cabelludo, cejas y lados de la nariz. Su manejo incluye champús medicados y cremas tópicas.',
+      recommendation: 'Utiliza el chatbot para aprender más sobre su tratamiento y prevención.',
+    },
+  };
+
+  const handleLearnMore = (type) => {
+    setSelectedType(dermatitisInfo[type]);
+    setModalVisible(true);
+  };
+
   return (
-    <LinearGradient colors={['#00d2ff', '#ff3c5e']} style={styles.container}>
+    <View style={styles.container}>
       {/* Header */}
-      <View style={styles.header}>
+      <LinearGradient colors={['red', 'red']} style={styles.header}>
         <Image
-          source={require('../assets/logo.png')} // Logo de chatderm
+          source={require('../assets/logo2.png')} // Logo de chatderm
           style={styles.logo}
         />
-        <Text style={styles.headerTitle}>chatderm - Tu Clínica Virtual de Dermatología</Text>
-        <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
-            <Image
-              source={require('../assets/choco.webp')} // Logo de chatderm
-              style={styles.logo}
-            />
-        </TouchableOpacity>
-      </View>
+        <Text style={styles.headerTitle}>Tu Clínica Virtual de Dermatología</Text>
+      </LinearGradient>
 
       {/* Contenido Principal */}
       <ScrollView contentContainerStyle={styles.contentContainer}>
-        <Text style={styles.title}>Bienvenido a chatderm</Text>
-        <Text style={styles.subtitle}>Especialistas en el cuidado de tu piel</Text>
+        <Text style={styles.title}>¡Bienvenido a chatderm!</Text>
+        <Text style={styles.subtitle}>Cuidamos de tu piel con especialistas virtuales.</Text>
 
-        {/* Sección de Tipos de Dermatitis */}
+        {/* Tarjetas de Tipos de Dermatitis */}
         <View style={styles.cardContainer}>
           {/* Dermatitis Atópica */}
           <View style={styles.card}>
-            <Image source={require('../assets/da.jpeg')} style={styles.cardImage} />
-            <Text style={styles.cardTitle}>Dermatitis Atópica</Text>
-            <Text style={styles.cardDescription}>
-              La dermatitis atópica es un tipo de eccema que causa picazón e inflamación.
-            </Text>
-            <TouchableOpacity style={styles.learnMoreButton}>
-              <Text style={styles.learnMoreButtonText}>Aprender más</Text>
-            </TouchableOpacity>
+            <Image source={require('../assets/da2.jpeg')} style={styles.cardImage} />
+            <View style={styles.cardContent}>
+              <Text style={styles.cardTitle}>Dermatitis Atópica</Text>
+              <Text style={styles.cardDescription}>
+                Un tipo de eccema que causa picazón e inflamación. Aprende a controlarla.
+              </Text>
+              <TouchableOpacity
+                style={styles.learnMoreButton}
+                onPress={() => handleLearnMore('atopica')}
+              >
+                <Text style={styles.learnMoreButtonText}>Descubre más</Text>
+              </TouchableOpacity>
+            </View>
           </View>
 
           {/* Dermatitis de Contacto */}
           <View style={styles.card}>
-            <Image source={require('../assets/dc.jpeg')} style={styles.cardImage} />
-            <Text style={styles.cardTitle}>Dermatitis de Contacto</Text>
-            <Text style={styles.cardDescription}>
-              La dermatitis de contacto se presenta cuando la piel entra en contacto con una sustancia irritante.
-            </Text>
-            <TouchableOpacity style={styles.learnMoreButton}>
-              <Text style={styles.learnMoreButtonText}>Aprender más</Text>
-            </TouchableOpacity>
+            <Image source={require('../assets/dc2.jpeg')} style={styles.cardImage} />
+            <View style={styles.cardContent}>
+              <Text style={styles.cardTitle}>Dermatitis de Contacto</Text>
+              <Text style={styles.cardDescription}>
+                Ocurre cuando la piel entra en contacto con sustancias irritantes.
+              </Text>
+              <TouchableOpacity
+                style={styles.learnMoreButton}
+                onPress={() => handleLearnMore('contacto')}
+              >
+                <Text style={styles.learnMoreButtonText}>Descubre más</Text>
+              </TouchableOpacity>
+            </View>
           </View>
 
           {/* Dermatitis Seborreica */}
           <View style={styles.card}>
-            <Image source={require('../assets/ds.jpg')} style={styles.cardImage} />
-            <Text style={styles.cardTitle}>Dermatitis Seborreica</Text>
-            <Text style={styles.cardDescription}>
-              La dermatitis seborreica causa piel roja y escamosa, generalmente en el cuero cabelludo.
-            </Text>
-            <TouchableOpacity style={styles.learnMoreButton}>
-              <Text style={styles.learnMoreButtonText}>Aprender más</Text>
+            <Image source={require('../assets/ds2.jpg')} style={styles.cardImage} />
+            <View style={styles.cardContent}>
+              <Text style={styles.cardTitle}>Dermatitis Seborreica</Text>
+              <Text style={styles.cardDescription}>
+                Afecta comúnmente el cuero cabelludo con piel roja y escamosa.
+              </Text>
+              <TouchableOpacity
+                style={styles.learnMoreButton}
+                onPress={() => handleLearnMore('seborreica')}
+              >
+                <Text style={styles.learnMoreButtonText}>Descubre más</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </ScrollView>
+
+      {/* Modal para Detalles */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContainer}>
+            <Text style={styles.modalTitle}>{selectedType?.title}</Text>
+            <Text style={styles.modalDescription}>{selectedType?.description}</Text>
+            <Text style={styles.modalRecommendation}>{selectedType?.recommendation}</Text>
+            <TouchableOpacity
+              style={styles.closeModalButton}
+              onPress={() => setModalVisible(false)}
+            >
+              <Text style={styles.closeModalButtonText}>Cerrar</Text>
             </TouchableOpacity>
           </View>
         </View>
-
-        {/* Botón para Ayuda con el Chatbot */}
-        <TouchableOpacity style={styles.chatbotButton} onPress={() => navigation.navigate('Chat')}>
-          <LinearGradient colors={['#ff3c5e', '#00d2ff']} style={styles.chatbotButton}>
-            <Icon name="comments" size={24} color="#ffffff" />
-            <Text style={styles.chatbotButtonText}>Habla con nuestro Especialista Virtual</Text>
-          </LinearGradient>
-        </TouchableOpacity>
-      </ScrollView>
-    </LinearGradient>
+      </Modal>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#f4f6fc',
   },
   header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    paddingVertical: 30,
     paddingHorizontal: 20,
-    paddingVertical: 15,
+    alignItems: 'center',
+    borderBottomLeftRadius: 25,
+    borderBottomRightRadius: 25,
+    elevation: 5,
   },
   logo: {
-    width: 40,
-    height: 40,
+    width: 50,
+    height: 50,
+    marginBottom: 10,
   },
   headerTitle: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
     color: '#ffffff',
-    flex: 1,
     textAlign: 'center',
-    marginHorizontal: 10,
   },
   contentContainer: {
     paddingHorizontal: 20,
     paddingVertical: 15,
   },
   title: {
-    fontSize: 24,
+    fontSize: 26,
     fontWeight: 'bold',
-    color: '#ffffff',
+    color: '#333333',
     textAlign: 'center',
-    marginBottom: 5,
+    marginBottom: 10,
   },
   subtitle: {
     fontSize: 16,
-    color: '#ffffff',
+    color: '#555555',
     textAlign: 'center',
     marginBottom: 20,
   },
@@ -121,34 +182,36 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   card: {
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
-    borderRadius: 15,
-    padding: 15,
+    backgroundColor: '#ffffff',
+    borderRadius: 20,
+    elevation: 5,
     marginBottom: 20,
+    overflow: 'hidden',
   },
   cardImage: {
     width: '100%',
-    height: 150,
-    borderRadius: 10,
-    marginBottom: 10,
+    height: 180,
     resizeMode: 'cover',
   },
+  cardContent: {
+    padding: 15,
+  },
   cardTitle: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 5,
-    color: '#ff3c5e',
+    color: 'red',
   },
   cardDescription: {
     fontSize: 14,
-    color: '#666',
-    marginBottom: 10,
+    color: '#777777',
+    marginBottom: 15,
   },
   learnMoreButton: {
     alignSelf: 'flex-start',
-    paddingVertical: 5,
-    paddingHorizontal: 15,
-    backgroundColor: '#ff3c5e',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    backgroundColor: 'red',
     borderRadius: 10,
   },
   learnMoreButtonText: {
@@ -156,19 +219,48 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 14,
   },
-  chatbotButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
     justifyContent: 'center',
-    paddingVertical: 15,
-    borderRadius: 25,
-    marginVertical: 10,
+    alignItems: 'center',
   },
-  chatbotButtonText: {
-    color: '#ffffff',
-    fontSize: 16,
+  modalContainer: {
+    backgroundColor: '#fff',
+    padding: 20,
+    borderRadius: 15,
+    width: '85%',
+    alignItems: 'center',
+  },
+  modalTitle: {
+    fontSize: 22,
     fontWeight: 'bold',
-    marginLeft: 10,
+    color: 'red',
+    marginBottom: 15,
+  },
+  modalDescription: {
+    fontSize: 16,
+    color: '#555555',
+    textAlign: 'center',
+    marginBottom: 15,
+  },
+  modalRecommendation: {
+    fontSize: 14,
+    color: '#333333',
+    fontStyle: 'italic',
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  closeModalButton: {
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    backgroundColor: 'red',
+    borderRadius: 10,
+  },
+  closeModalButtonText: {
+    color: '#ffffff',
+    fontWeight: 'bold',
+    fontSize: 14,
   },
 });
 
